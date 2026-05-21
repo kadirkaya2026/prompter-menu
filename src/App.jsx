@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   ShoppingCart, X, Smartphone, CreditCard, Banknote, Star, Coffee, Clock, Search, 
   Music2, CheckCircle2, AlertTriangle, Users, LayoutDashboard, Utensils, Bell, 
-  ChevronRight, Play, Info
+  ChevronRight, Play, Info, Wifi
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -30,11 +30,8 @@ const App = () => {
   const [splitCount, setSplitCount] = useState(1);
   const [timeLeft, setTimeLeft] = useState(0);
   const [rating, setRating] = useState(0);
-  const [jukeboxVote, setJukeboxVote] = useState(null);
 
-  // Kasa Bildirimleri
   const [orders, setOrders] = useState([]);
-
   const totalPrice = cart.reduce((acc, item) => acc + item.price, 0);
 
   useEffect(() => {
@@ -121,7 +118,7 @@ const App = () => {
       {screen === 'menu' && (
         <header className="sticky top-0 z-40 bg-[#070707]/90 backdrop-blur-xl border-b border-white/5 p-6 flex justify-between items-center">
           <div onDoubleClick={() => setMode('kitchen')}>
-            <h1 className="text-xl font-black italic tracking-tighter text-white uppercase">Prompter <span className="text-primary underline">Menu</span></h1>
+            <h1 className="text-xl font-black italic tracking-tighter text-white uppercase leading-none">Prompter <span className="text-primary underline">Menu</span></h1>
             <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Masa 4 • Kadıköy</p>
           </div>
           <button className="w-10 h-10 bg-zinc-900 rounded-xl flex items-center justify-center border border-white/10 text-zinc-400">
@@ -178,8 +175,9 @@ const App = () => {
       {screen === 'active' && (
         <main className="p-8 pt-16 flex flex-col items-center">
           <div className="w-24 h-24 bg-primary/10 rounded-[40px] flex items-center justify-center mb-8"><Coffee size={40} className="text-primary animate-bounce" /></div>
-          <h2 className="text-4xl font-black uppercase italic mb-2">Hazırlanıyor</h2>
-          <div className="w-full bg-zinc-900/50 p-10 rounded-[48px] border border-white/5 mb-8 text-center">
+          <h2 className="text-4xl font-black uppercase italic mb-2 tracking-tighter">Hazırlanıyor</h2>
+          
+          <div className="w-full bg-zinc-900/50 p-10 rounded-[48px] border border-white/5 mb-8 text-center relative overflow-hidden">
              <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-4">Kalan Süre</p>
              <div className="text-6xl font-black italic mb-6">
                 {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
@@ -189,12 +187,37 @@ const App = () => {
              </div>
           </div>
 
+          {/* WIFI CREDENTIALS - NEW SECTION */}
+          <div className="w-full bg-white/5 p-6 rounded-[32px] border border-white/10 mb-8 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 blur-2xl -mr-8 -mt-8 group-hover:bg-primary/20 transition-colors" />
+            <div className="flex items-center gap-4 mb-4">
+               <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center text-primary">
+                 <Wifi size={20} />
+               </div>
+               <div>
+                 <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Özel Wi-Fi Erişimi</p>
+                 <h4 className="text-sm font-black italic uppercase">Bağlantı Detayları</h4>
+               </div>
+            </div>
+            <div className="space-y-3">
+               <div className="flex justify-between items-center bg-black/40 p-3 rounded-2xl border border-white/5">
+                 <span className="text-[10px] font-bold text-zinc-500 uppercase">Ağ Adı</span>
+                 <span className="text-xs font-black tracking-wider">Prompter_Guest_Masa4</span>
+               </div>
+               <div className="flex justify-between items-center bg-black/40 p-3 rounded-2xl border border-white/5">
+                 <span className="text-[10px] font-bold text-zinc-500 uppercase">Şifre</span>
+                 <span className="text-xs font-black tracking-widest text-primary">cafe2024!</span>
+               </div>
+            </div>
+          </div>
+
+          {/* JUKEBOX SECTION */}
           <div className="w-full bg-[#1DB954]/5 p-6 rounded-[32px] border border-[#1DB954]/10 mb-8">
              <div className="flex items-center gap-3 mb-6">
                 <div className="w-8 h-8 bg-[#1DB954] rounded-full flex items-center justify-center text-black"><Play size={16} fill="black" /></div>
                 <div>
-                  <p className="text-[9px] font-black text-[#1DB954] uppercase mb-1">Şu an çalıyor</p>
-                  <p className="text-xs font-bold">Arctic Monkeys - Do I Wanna Know</p>
+                  <p className="text-[9px] font-black text-[#1DB954] uppercase mb-1 leading-none">Şu an çalıyor</p>
+                  <p className="text-xs font-bold leading-none">Arctic Monkeys - Do I Wanna Know</p>
                 </div>
              </div>
              <div className="space-y-3">
@@ -210,7 +233,7 @@ const App = () => {
         </main>
       )}
 
-      {/* MODALS */}
+      {/* ALL MODALS (Selected Item, Cart, CRM, Bill) */}
       <AnimatePresence>
         {selectedItem && (
           <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} className="fixed inset-0 z-[100] bg-black p-8 flex flex-col pt-20">
@@ -233,7 +256,7 @@ const App = () => {
         {isCartOpen && (
           <div className="fixed inset-0 z-[110] flex flex-col justify-end">
             <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsCartOpen(false)} />
-            <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} className="relative bg-[#121212] rounded-t-[48px] p-10 max-w-md mx-auto w-full border-t border-white/10 shadow-2xl">
+            <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} className="relative bg-[#121212] rounded-t-[48px] p-10 max-w-md mx-auto w-full border-t border-white/10">
               <h3 className="text-2xl font-black italic uppercase mb-8">Sepetin</h3>
               <div className="space-y-4 mb-8 max-h-[40vh] overflow-y-auto no-scrollbar">
                 {cart.map(i => (
@@ -258,7 +281,7 @@ const App = () => {
               <div className="w-20 h-20 bg-primary/10 rounded-[30px] flex items-center justify-center mx-auto text-primary animate-pulse"><Smartphone size={40} /></div>
               <h3 className="text-3xl font-black italic uppercase">Numaranı Gir</h3>
               <input type="tel" placeholder="05xx..." className="w-full bg-zinc-900 border border-white/10 p-6 rounded-3xl text-2xl font-black text-center focus:border-primary outline-none" />
-              <button onClick={handleOrderConfirm} className="w-full bg-white text-black py-6 rounded-3xl font-black uppercase italic text-xl shadow-2xl">Siparişi Onayla</button>
+              <button onClick={handleOrderConfirm} className="w-full bg-white text-black py-6 rounded-3xl font-black uppercase italic text-xl">Siparişi Onayla</button>
             </div>
           </div>
         )}
@@ -322,8 +345,7 @@ const App = () => {
       {screen === 'feedback' && (
         <div className="min-h-screen flex flex-col items-center justify-center p-10 text-center bg-black">
           <div className="w-24 h-24 bg-primary/10 rounded-[40px] flex items-center justify-center text-primary mb-8"><CheckCircle2 size={48} /></div>
-          <h2 className="text-5xl font-black uppercase italic italic mb-4">Afiyet <span className="text-primary block mt-2">Olsun!</span></h2>
-          <p className="text-zinc-500 mb-12 font-medium">Lütfen bizi değerlendir.</p>
+          <h2 className="text-5xl font-black uppercase italic mb-4 leading-none">Afiyet <span className="text-primary block mt-2">Olsun!</span></h2>
           <div className="flex gap-4 mb-16">
             {[1, 2, 3, 4, 5].map(s => <Star key={s} size={40} onClick={() => setRating(s)} fill={rating >= s ? "#FF6B00" : "none"} color={rating >= s ? "#FF6B00" : "#27272a"} />)}
           </div>
