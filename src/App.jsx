@@ -18,13 +18,12 @@ const MENU_DATA = {
 };
 
 const App = () => {
-  const [mode, setMode] = useState('customer'); // customer, kitchen
-  const [screen, setScreen] = useState('menu'); // menu, active, feedback
+  const [mode, setMode] = useState('customer'); 
+  const [screen, setScreen] = useState('menu'); 
   const [activeTab, setActiveTab] = useState('coffee');
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [isCrmOpen, setIsCrmOpen] = useState(false);
   const [isBillOpen, setIsBillOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [splitCount, setSplitCount] = useState(1);
@@ -52,8 +51,8 @@ const App = () => {
     };
     setOrders([newOrder, ...orders]);
     setTimeLeft(Math.max(...cart.map(i => i.time), 5) * 60);
-    setIsCrmOpen(false);
-    setScreen('active');
+    setIsCartOpen(false); // Sepeti kapat
+    setScreen('active'); // Doğrudan aktif ekrana geç (Numara sorma yok!)
   };
 
   const handleBillConfirm = () => {
@@ -187,22 +186,22 @@ const App = () => {
              </div>
           </div>
 
-          {/* WIFI CREDENTIALS - NEW SECTION */}
+          {/* WIFI CREDENTIALS */}
           <div className="w-full bg-white/5 p-6 rounded-[32px] border border-white/10 mb-8 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 blur-2xl -mr-8 -mt-8 group-hover:bg-primary/20 transition-colors" />
+            <div className="absolute top-0 right-0 w-24 h-24 bg-primary/10 blur-2xl -mr-8 -mt-8" />
             <div className="flex items-center gap-4 mb-4">
                <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center text-primary">
                  <Wifi size={20} />
                </div>
                <div>
-                 <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Özel Wi-Fi Erişimi</p>
-                 <h4 className="text-sm font-black italic uppercase">Bağlantı Detayları</h4>
+                 <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest leading-none mb-1">Bağlantı Detayları</p>
+                 <h4 className="text-sm font-black italic uppercase leading-none">Ücretsiz Wi-Fi</h4>
                </div>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2">
                <div className="flex justify-between items-center bg-black/40 p-3 rounded-2xl border border-white/5">
-                 <span className="text-[10px] font-bold text-zinc-500 uppercase">Ağ Adı</span>
-                 <span className="text-xs font-black tracking-wider">Prompter_Guest_Masa4</span>
+                 <span className="text-[10px] font-bold text-zinc-500 uppercase">Kullanıcı</span>
+                 <span className="text-xs font-black tracking-wider">Prompter_Guest</span>
                </div>
                <div className="flex justify-between items-center bg-black/40 p-3 rounded-2xl border border-white/5">
                  <span className="text-[10px] font-bold text-zinc-500 uppercase">Şifre</span>
@@ -229,11 +228,11 @@ const App = () => {
              </div>
           </div>
 
-          <button onClick={() => setIsBillOpen(true)} className="w-full bg-primary py-5 rounded-3xl font-black uppercase italic text-lg shadow-xl shadow-primary/20">Hesabı İste</button>
+          <button onClick={() => setIsBillOpen(true)} className="w-full bg-primary py-5 rounded-3xl font-black uppercase italic text-lg shadow-xl shadow-primary/20 transition-transform active:scale-95">Hesabı İste</button>
         </main>
       )}
 
-      {/* ALL MODALS (Selected Item, Cart, CRM, Bill) */}
+      {/* ALL MODALS (Simplified) */}
       <AnimatePresence>
         {selectedItem && (
           <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} className="fixed inset-0 z-[100] bg-black p-8 flex flex-col pt-20">
@@ -249,14 +248,14 @@ const App = () => {
                 <p className="text-[10px] font-black uppercase text-zinc-600 mb-2">İçindekiler</p>
                 <p className="text-xs text-zinc-300 font-medium">{selectedItem.ingredients}</p>
              </div>
-             <button onClick={() => { setCart([...cart, {...selectedItem, cartId: Date.now()}]); setSelectedItem(null); }} className="w-full bg-white text-black py-5 rounded-[32px] font-black uppercase italic text-xl mt-auto">Sepete Ekle • ₺{selectedItem.price}</button>
+             <button onClick={() => { setCart([...cart, {...selectedItem, cartId: Date.now()}]); setSelectedItem(null); }} className="w-full bg-white text-black py-5 rounded-[32px] font-black uppercase italic text-xl mt-auto transition-transform active:scale-95">Sepete Ekle • ₺{selectedItem.price}</button>
           </motion.div>
         )}
 
         {isCartOpen && (
           <div className="fixed inset-0 z-[110] flex flex-col justify-end">
             <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsCartOpen(false)} />
-            <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} className="relative bg-[#121212] rounded-t-[48px] p-10 max-w-md mx-auto w-full border-t border-white/10">
+            <motion.div initial={{ y: '100%' }} animate={{ y: 0 }} className="relative bg-[#121212] rounded-t-[48px] p-10 max-w-md mx-auto w-full border-t border-white/10 shadow-2xl">
               <h3 className="text-2xl font-black italic uppercase mb-8">Sepetin</h3>
               <div className="space-y-4 mb-8 max-h-[40vh] overflow-y-auto no-scrollbar">
                 {cart.map(i => (
@@ -270,19 +269,8 @@ const App = () => {
                 <span className="text-zinc-500 uppercase text-xs">Toplam</span>
                 <span className="text-3xl text-primary">₺{totalPrice}</span>
               </div>
-              <button onClick={() => { setIsCartOpen(false); setIsCrmOpen(true); }} className="w-full bg-primary py-5 rounded-3xl font-black uppercase italic text-lg shadow-xl shadow-primary/20">Siparişi Tamamla</button>
+              <button onClick={handleOrderConfirm} className="w-full bg-primary py-5 rounded-3xl font-black uppercase italic text-lg shadow-xl shadow-primary/20 transition-transform active:scale-95">Siparişi Onayla</button>
             </motion.div>
-          </div>
-        )}
-
-        {isCrmOpen && (
-          <div className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-black">
-            <div className="w-full space-y-8 text-center">
-              <div className="w-20 h-20 bg-primary/10 rounded-[30px] flex items-center justify-center mx-auto text-primary animate-pulse"><Smartphone size={40} /></div>
-              <h3 className="text-3xl font-black italic uppercase">Numaranı Gir</h3>
-              <input type="tel" placeholder="05xx..." className="w-full bg-zinc-900 border border-white/10 p-6 rounded-3xl text-2xl font-black text-center focus:border-primary outline-none" />
-              <button onClick={handleOrderConfirm} className="w-full bg-white text-black py-6 rounded-3xl font-black uppercase italic text-xl">Siparişi Onayla</button>
-            </div>
           </div>
         )}
 
@@ -322,7 +310,7 @@ const App = () => {
                     </div>
                   </div>
                 )}
-                <button onClick={handleBillConfirm} disabled={!paymentMethod} className="w-full bg-white text-black py-6 rounded-3xl font-black uppercase italic text-xl disabled:opacity-30">Garsonu Çağır</button>
+                <button onClick={handleBillConfirm} disabled={!paymentMethod} className="w-full bg-white text-black py-6 rounded-3xl font-black uppercase italic text-xl disabled:opacity-30 transition-transform active:scale-95">Garsonu Çağır</button>
              </motion.div>
           </div>
         )}
@@ -331,7 +319,7 @@ const App = () => {
       {/* FLOATING CART BAR */}
       {screen === 'menu' && totalPrice > 0 && (
         <div className="fixed bottom-10 left-6 right-6 z-50">
-          <button onClick={() => setIsCartOpen(true)} className="w-full bg-primary p-5 rounded-3xl flex justify-between items-center shadow-2xl shadow-primary/40 active:scale-95 transition-transform">
+          <button onClick={() => setIsCartOpen(true)} className="w-full bg-primary p-5 rounded-3xl flex justify-between items-center shadow-2xl shadow-primary/40 transition-transform active:scale-95">
              <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-black/20 rounded-xl flex items-center justify-center"><ShoppingCart size={20} /></div>
                 <span className="font-black italic text-xl">₺{totalPrice}</span>
@@ -346,6 +334,7 @@ const App = () => {
         <div className="min-h-screen flex flex-col items-center justify-center p-10 text-center bg-black">
           <div className="w-24 h-24 bg-primary/10 rounded-[40px] flex items-center justify-center text-primary mb-8"><CheckCircle2 size={48} /></div>
           <h2 className="text-5xl font-black uppercase italic mb-4 leading-none">Afiyet <span className="text-primary block mt-2">Olsun!</span></h2>
+          <p className="text-zinc-500 mb-12 font-medium">Lütfen bizi değerlendir.</p>
           <div className="flex gap-4 mb-16">
             {[1, 2, 3, 4, 5].map(s => <Star key={s} size={40} onClick={() => setRating(s)} fill={rating >= s ? "#FF6B00" : "none"} color={rating >= s ? "#FF6B00" : "#27272a"} />)}
           </div>
